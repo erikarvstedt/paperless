@@ -72,8 +72,6 @@ db.sqlite3
 .virtualenv
 virtualenv
 .vagrant
-docker-compose.yml
-docker-compose.env
 
 # Used for development
 scripts/import-for-development
