@@ -13,7 +13,7 @@ class ChecksTestCase(TestCase):
         self.assertEqual(changed_password_check(None), [])
 
     def test_changed_password_check_no_encryption(self):
-        DocumentFactory.create(storage_type=Document.STORAGE_TYPE_UNENCRYPTED)
+        DocumentFactory.create(is_encrypted=False)
         self.assertEqual(changed_password_check(None), [])
 
     @unittest.skip("I don't know how to test this")

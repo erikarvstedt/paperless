@@ -48,9 +48,9 @@ class Consumer:
         except FileExistsError:
             pass
 
-        self.storage_type = Document.STORAGE_TYPE_UNENCRYPTED
+        self.is_encrypted = False
         if settings.PASSPHRASE:
-            self.storage_type = Document.STORAGE_TYPE_GPG
+            self.is_encrypted = True
 
         self.stats = {}
         self._ignore = []
@@ -203,7 +203,7 @@ class Consumer:
                 checksum=hashlib.md5(f.read()).hexdigest(),
                 created=created,
                 modified=created,
-                storage_type=self.storage_type
+                is_encrypted=self.is_encrypted
             )
 
         relevant_tags = set(list(Tag.match_all(text)) + list(file_info.tags))
@@ -222,7 +222,7 @@ class Consumer:
     def _write(self, document, source, target):
         with open(source, "rb") as read_file:
             with open(target, "wb") as write_file:
-                if document.storage_type == Document.STORAGE_TYPE_UNENCRYPTED:
+                if not document.is_encrypted:
                     write_file.write(read_file.read())
                     return
                 self.log("debug", "Encrypting")

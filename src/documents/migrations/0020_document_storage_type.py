@@ -14,12 +14,12 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='document',
-            name='storage_type',
-            field=models.CharField(choices=[('unencrypted', 'Unencrypted'), ('gpg', 'Encrypted with GNU Privacy Guard')], default='gpg', editable=False, max_length=11),
+            name='is_encrypted',
+            field=models.BooleanField(default=True, editable=False),
         ),
         migrations.AlterField(
             model_name='document',
-            name='storage_type',
-            field=models.CharField(choices=[('unencrypted', 'Unencrypted'), ('gpg', 'Encrypted with GNU Privacy Guard')], default='unencrypted', editable=False, max_length=11),
+            name='is_encrypted',
+            field=models.BooleanField(default=False, editable=False),
         )
     ]

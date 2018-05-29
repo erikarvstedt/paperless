@@ -66,7 +66,7 @@ class FetchView(SessionOrBasicAuthMixin, DetailView):
         return response
 
     def _get_raw_data(self, file_handle):
-        if self.object.storage_type == Document.STORAGE_TYPE_UNENCRYPTED:
+        if not self.object.is_encrypted:
             return file_handle
         return GnuPG.decrypted(file_handle)
 

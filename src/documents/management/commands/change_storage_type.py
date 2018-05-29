@@ -70,8 +70,7 @@ class Command(BaseCommand):
     @staticmethod
     def __gpg_to_unencrypted(passphrase):
 
-        encrypted_files = Document.objects.filter(
-            storage_type=Document.STORAGE_TYPE_GPG)
+        encrypted_files = Document.objects.filter(is_encrypted=True)
 
         for document in encrypted_files:
 
@@ -81,7 +80,7 @@ class Command(BaseCommand):
             raw_document = GnuPG.decrypted(document.source_file, passphrase)
             raw_thumb = GnuPG.decrypted(document.thumbnail_file, passphrase)
 
-            document.storage_type = Document.STORAGE_TYPE_UNENCRYPTED
+            document.is_encrypted = False
 
             with open(document.source_path, "wb") as f:
                 f.write(raw_document)
@@ -89,7 +88,7 @@ class Command(BaseCommand):
             with open(document.thumbnail_path, "wb") as f:
                 f.write(raw_thumb)
 
-            document.save(update_fields=("storage_type",))
+            document.save(update_fields=("is_encrypted",))
 
             for path in old_paths:
                 os.unlink(path)
@@ -97,8 +96,7 @@ class Command(BaseCommand):
     @staticmethod
     def __unencrypted_to_gpg(passphrase):
 
-        unencrypted_files = Document.objects.filter(
-            storage_type=Document.STORAGE_TYPE_UNENCRYPTED)
+        unencrypted_files = Document.objects.filter(is_encrypted=False)
 
         for document in unencrypted_files:
 
@@ -107,13 +105,13 @@ class Command(BaseCommand):
             old_paths = [document.source_path, document.thumbnail_path]
             with open(document.source_path, "rb") as raw_document:
                 with open(document.thumbnail_path, "rb") as raw_thumb:
-                    document.storage_type = Document.STORAGE_TYPE_GPG
+                    document.is_encrypted = True
                     with open(document.source_path, "wb") as f:
                         f.write(GnuPG.encrypted(raw_document, passphrase))
                     with open(document.thumbnail_path, "wb") as f:
                         f.write(GnuPG.encrypted(raw_thumb, passphrase))
 
-            document.save(update_fields=("storage_type",))
+            document.save(update_fields=("is_encrypted",))
 
             for path in old_paths:
                 os.unlink(path)

@@ -190,13 +190,6 @@ class Document(models.Model):
     TYPE_TIF = "tiff"
     TYPES = (TYPE_PDF, TYPE_PNG, TYPE_JPG, TYPE_GIF, TYPE_TIF,)
 
-    STORAGE_TYPE_UNENCRYPTED = "unencrypted"
-    STORAGE_TYPE_GPG = "gpg"
-    STORAGE_TYPES = (
-        (STORAGE_TYPE_UNENCRYPTED, "Unencrypted"),
-        (STORAGE_TYPE_GPG, "Encrypted with GNU Privacy Guard")
-    )
-
     correspondent = models.ForeignKey(
         Correspondent,
         blank=True,
@@ -236,12 +229,7 @@ class Document(models.Model):
         default=timezone.now, db_index=True)
     modified = models.DateTimeField(
         auto_now=True, editable=False, db_index=True)
-    storage_type = models.CharField(
-        max_length=11,
-        choices=STORAGE_TYPES,
-        default=STORAGE_TYPE_UNENCRYPTED,
-        editable=False
-    )
+    is_encrypted = models.BooleanField(default=False, editable=False)
 
     class Meta:
         ordering = ("correspondent", "title")
@@ -259,7 +247,7 @@ class Document(models.Model):
     def source_path(self):
 
         file_name = "{:07}.{}".format(self.pk, self.file_type)
-        if self.storage_type == self.STORAGE_TYPE_GPG:
+        if self.is_encrypted:
             file_name += ".gpg"
 
         return os.path.join(
@@ -285,7 +273,7 @@ class Document(models.Model):
     def thumbnail_path(self):
 
         file_name = "{:07}.png".format(self.pk)
-        if self.storage_type == self.STORAGE_TYPE_GPG:
+        if self.is_encrypted:
             file_name += ".gpg"
 
         return os.path.join(

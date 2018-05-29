@@ -10,8 +10,7 @@ def changed_password_check(app_configs, **kwargs):
     from paperless.db import GnuPG
 
     try:
-        encrypted_doc = Document.objects.filter(
-            storage_type=Document.STORAGE_TYPE_GPG).first()
+        encrypted_doc = Document.objects.filter(is_encrypted=True).first()
     except OperationalError:
         return []  # No documents table yet
 
