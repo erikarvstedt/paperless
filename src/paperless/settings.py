@@ -260,7 +260,7 @@ CONSUMER_LOOP_TIME = int(os.getenv("PAPERLESS_CONSUMER_LOOP_TIME", 10))
 # Translation:
 # * If you're a new user, you can safely ignore this setting.
 # * If you're upgrading from 1.x, this must be set, OR you can run
-#   `./manage.py change_storage_type gpg unencrypted` to decrypt your files,
+#   `./manage.py change_encryption gpg unencrypted` to decrypt your files,
 #   after which you can unset this value.
 PASSPHRASE = os.getenv("PAPERLESS_PASSPHRASE")
 

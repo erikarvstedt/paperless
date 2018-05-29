@@ -25,7 +25,7 @@ Encryption isn't gone, it's just off for new users.  So long as you have
 should continue to operate as it always has.  If however, you want to drop
 encryption too, you only need to do two things:
 
-1. Run ``./manage.py migrate && ./manage.py change_storage_type gpg unencrypted``.
+1. Run ``./manage.py migrate && ./manage.py change_encryption gpg unencrypted``.
    This will go through your entire database and Decrypt  All The Things.
 2. Remove ``PAPERLESS_PASSPHRASE`` from your ``paperless.conf`` file, or simply
    stop declaring it in your environment.
