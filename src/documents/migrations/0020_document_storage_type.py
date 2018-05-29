@@ -17,4 +17,9 @@ class Migration(migrations.Migration):
             name='storage_type',
             field=models.CharField(choices=[('unencrypted', 'Unencrypted'), ('gpg', 'Encrypted with GNU Privacy Guard')], default='gpg', editable=False, max_length=11),
         ),
+        migrations.AlterField(
+            model_name='document',
+            name='storage_type',
+            field=models.CharField(choices=[('unencrypted', 'Unencrypted'), ('gpg', 'Encrypted with GNU Privacy Guard')], default='unencrypted', editable=False, max_length=11),
+        )
     ]
