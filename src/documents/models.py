@@ -190,8 +190,8 @@ class Document(models.Model):
     TYPE_TIF = "tiff"
     TYPES = (TYPE_PDF, TYPE_PNG, TYPE_JPG, TYPE_GIF, TYPE_TIF,)
 
-    STORAGE_TYPE_UNENCRYPTED = "unencrypted"
-    STORAGE_TYPE_GPG = "gpg"
+    STORAGE_TYPE_UNENCRYPTED = 0
+    STORAGE_TYPE_GPG = 1
     STORAGE_TYPES = (
         (STORAGE_TYPE_UNENCRYPTED, "Unencrypted"),
         (STORAGE_TYPE_GPG, "Encrypted with GNU Privacy Guard")
@@ -237,8 +237,7 @@ class Document(models.Model):
     modified = models.DateTimeField(
         auto_now=True, editable=False, db_index=True)
 
-    storage_type = models.CharField(
-        max_length=11,
+    storage_type = models.PositiveSmallIntegerField(
         choices=STORAGE_TYPES,
         default=STORAGE_TYPE_UNENCRYPTED,
         editable=False
