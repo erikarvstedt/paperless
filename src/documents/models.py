@@ -57,7 +57,7 @@ class MatchingModel(models.Model):
 
     is_insensitive = models.BooleanField(default=True)
 
-    class Meta(object):
+    class Meta:
         abstract = True
 
     def __str__(self):
@@ -156,7 +156,7 @@ class Correspondent(MatchingModel):
     # better safe than sorry.
     SAFE_REGEX = re.compile(r"^[\w\- ,.']+$")
 
-    class Meta(object):
+    class Meta:
         ordering = ("name",)
 
 
@@ -231,8 +231,9 @@ class Document(models.Model):
         auto_now=True, editable=False, db_index=True)
     added = models.DateTimeField(
         default=timezone.now, editable=False, db_index=True)
+    is_encrypted = models.BooleanField(default=False, editable=False)
 
-    class Meta(object):
+    class Meta:
         ordering = ("correspondent", "title")
 
     def __str__(self):
@@ -246,11 +247,16 @@ class Document(models.Model):
 
     @property
     def source_path(self):
+
+        file_name = "{:07}.{}".format(self.pk, self.file_type)
+        if self.is_encrypted:
+            file_name += ".gpg"
+
         return os.path.join(
             settings.MEDIA_ROOT,
             "documents",
             "originals",
-            "{:07}.{}.gpg".format(self.pk, self.file_type)
+            file_name
         )
 
     @property
@@ -267,11 +273,16 @@ class Document(models.Model):
 
     @property
     def thumbnail_path(self):
+
+        file_name = "{:07}.png".format(self.pk)
+        if self.is_encrypted:
+            file_name += ".gpg"
+
         return os.path.join(
             settings.MEDIA_ROOT,
             "documents",
             "thumbnails",
-            "{:07}.png.gpg".format(self.pk)
+            file_name
         )
 
     @property
@@ -301,7 +312,7 @@ class Log(models.Model):
 
     objects = LogManager()
 
-    class Meta(object):
+    class Meta:
         ordering = ("-modified",)
 
     def __str__(self):
